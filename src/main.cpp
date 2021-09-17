@@ -3,6 +3,7 @@
 #include "./System/System.hpp"
 #include "./Entities/Entity.hpp"
 #include <iostream>
+#include <ctime>
 
 #define SCREEN_WIDTH (800)
 #define SCREEN_HEIGHT (450)
@@ -13,18 +14,17 @@
 
 int main(void)
 {
+    srand(time(0));
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Window title");
     SetTargetFPS(60);
 
     Texture2D texture = LoadTexture(ASSETS_PATH"test.png");
 
-    std::cout << generateId() << std::endl;
-
     System<Entity> entitySystem;
 
-    entitySystem.insert();
-    entitySystem.insert();
-    entitySystem.insert();
+    entitySystem.create();
+    entitySystem.create();
+    entitySystem.create();
 
     entitySystem.for_each([](Entity *entity) {
         std::cout << entity->id << std::endl;

@@ -1,31 +1,33 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
-#include <map>
-#include <iostream>
+#include <unordered_map>
 
 #include "../Utils/Id.hpp"
 
 template<typename T>
 class System {
 	private:
-		std::map<Id, T*> entities;
+		std::unordered_map<Id, T*> entities;
 	public:
-		void insert();
+		Id create();
 		void remove(Id id);
 		T* get(Id id);
 
 		void for_each(void (*func)(T *entity));
+		~System();
 };
 
 template <typename T>
-void System<T>::insert() {
+Id System<T>::create() {
 	Id id = generateId();
 	this->entities[id] = new T(id);
+	return id;
 }
 
 template <typename T>
 void System<T>::remove(Id id) {
+	delete this->entities[id];
 	this->entities.erase(id);
 }
 
@@ -38,6 +40,13 @@ template <typename T>
 void System<T>::for_each(void (*func)(T *entity)) {
 	for (const auto& kv : this->entities) {
 		func(kv.second);
+	}
+}
+
+template <typename T>
+System<T>::~System() {
+	for (const auto& kv : this->entities) {
+		delete kv.second;
 	}
 }
 

@@ -9,7 +9,6 @@
 
 typedef std::string Id;
 
-
 static Id generateId() {
 	char letters[] = {
 		'1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
@@ -19,7 +18,7 @@ static Id generateId() {
 	Id result;
 
 	for (int i = 0; i < ID_SIZE; i++) {
-		result.push_back(letters[randRange(0, 62)]);
+		result.push_back(letters[randRange(0, 61)]);
 	}
 
 	return result;
