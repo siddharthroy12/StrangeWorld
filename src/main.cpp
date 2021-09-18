@@ -1,7 +1,5 @@
 #include "raylib.h"
-#include "./Utils/Id.hpp"
-#include "./System/System.hpp"
-#include "./Entities/Entity.hpp"
+#include "./Globals/EntitySystem.hpp"
 #include <iostream>
 #include <ctime>
 
@@ -20,14 +18,13 @@ int main(void)
 
     Texture2D texture = LoadTexture(ASSETS_PATH"test.png");
 
-    System<Entity> entitySystem;
 
-    entitySystem.create();
-    entitySystem.create();
-    entitySystem.create();
+    entitySystem.create(new Entity());
+    entitySystem.create(new Entity());
+    entitySystem.create(new Entity());
 
     entitySystem.for_each([](Entity *entity) {
-        std::cout << entity->id << std::endl;
+        std::cout << entity->_id << std::endl;
     });
 
     while (!WindowShouldClose())

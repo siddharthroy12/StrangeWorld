@@ -1,14 +1,14 @@
 #ifndef ENETIY_HPP
-#define ENTIT_HPP
+#define ENTITY_HPP
 
 #include "../Utils/Id.hpp"
 #include <iostream>
 
 class Entity {
 	public:
-		void update();
-		Entity(Id id) : id(id) {}
-		Id id;
+		virtual void update() {};
+		virtual void render() {};
+		Id _id;
 		
 };
 

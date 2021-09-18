@@ -10,7 +10,7 @@ class System {
 	private:
 		std::unordered_map<Id, T*> entities;
 	public:
-		Id create();
+		Id create(T* entity);
 		void remove(Id id);
 		T* get(Id id);
 
@@ -19,9 +19,10 @@ class System {
 };
 
 template <typename T>
-Id System<T>::create() {
+Id System<T>::create(T* entity) {
 	Id id = generateId();
-	this->entities[id] = new T(id);
+	entity->_id = id;
+	this->entities[id] = entity;
 	return id;
 }
 
