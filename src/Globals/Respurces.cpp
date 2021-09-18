@@ -1,2 +1,2 @@
-#define EXTERN
+#define IMPL
 #include "Resources.hpp"

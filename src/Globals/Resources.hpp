@@ -1,11 +1,19 @@
 #ifndef RESOURCES_HPP
 #define RESOURCES_HPP
 
-#include "API.hpp"
-
 #include "raylib.h"
 
+#ifdef IMPL
+
 // Player resources
-API Texture player_texture;
+Texture playerTexture;
+
+#else
+
+extern Texture playerTexture;
+
+#endif
+
+
 
 #endif
