@@ -1,9 +1,11 @@
-#ifndef ENTITY_SYSTEM_HPP
-#define ENTITY_SYSTEM_HPP
+#ifndef ENTITY_SYSTEM_INSTANCE_HPP
+#define ENTITY_SYSTEM_INSTANCE_HPP
 
-#include "../System/System.hpp"
+#include "API.hpp"
+
+#include "../System/EntitySystem.hpp"
 #include "../Entities/Entity.hpp"
 
-extern System<Entity> entitySystem;
+API EntitySystem<Entity> entitySystem;
 
 #endif

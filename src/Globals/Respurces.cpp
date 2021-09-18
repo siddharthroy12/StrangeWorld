@@ -1,4 +1,2 @@
-#include "raylib.h"
-
-// Player resources
-Texture player_texture;
+#define EXTERN
+#include "Resources.hpp"

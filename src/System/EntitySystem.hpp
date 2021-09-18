@@ -1,12 +1,12 @@
-#ifndef SYSTEM_HPP
-#define SYSTEM_HPP
+#ifndef ENTITY_SYSTEM_HPP
+#define ENTITY_SYSTEM_HPP
 
 #include <unordered_map>
 
 #include "../Utils/Id.hpp"
 
 template<typename T>
-class System {
+class EntitySystem {
 	private:
 		std::unordered_map<Id, T*> entities;
 	public:
@@ -15,11 +15,11 @@ class System {
 		T* get(Id id);
 
 		void for_each(void (*func)(T *entity));
-		~System();
+		~EntitySystem();
 };
 
 template <typename T>
-Id System<T>::create(T* entity) {
+Id EntitySystem<T>::create(T* entity) {
 	Id id = generateId();
 	entity->_id = id;
 	this->entities[id] = entity;
@@ -27,25 +27,25 @@ Id System<T>::create(T* entity) {
 }
 
 template <typename T>
-void System<T>::remove(Id id) {
+void EntitySystem<T>::remove(Id id) {
 	delete this->entities[id];
 	this->entities.erase(id);
 }
 
 template <typename T>
-T* System<T>::get(Id id) {
+T* EntitySystem<T>::get(Id id) {
 	return this->entities[id];
 }
 
 template <typename T>
-void System<T>::for_each(void (*func)(T *entity)) {
+void EntitySystem<T>::for_each(void (*func)(T *entity)) {
 	for (const auto& kv : this->entities) {
 		func(kv.second);
 	}
 }
 
 template <typename T>
-System<T>::~System() {
+EntitySystem<T>::~EntitySystem() {
 	for (const auto& kv : this->entities) {
 		delete kv.second;
 	}
