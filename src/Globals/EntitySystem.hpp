@@ -1,17 +1,15 @@
 #ifndef ENTITY_SYSTEM_INSTANCE_HPP
 #define ENTITY_SYSTEM_INSTANCE_HPP
 
-#include "../System/EntitySystem.hpp"
 #include "../Entities/Entity.hpp"
+#include <unordered_map>
+#include <memory>
 
-#ifdef IMPL
-
-EntitySystem<Entity> entitySystem;
-
-#else
-
-extern EntitySystem<Entity> entitySystem;
-
-#endif
+namespace EntitySystem {
+	extern std::unordered_map<Id, std::shared_ptr<Entity>> _entities;
+	extern Id create(std::shared_ptr<Entity> entity);
+	extern void remove(Id id);
+	void for_each(void (*func)(std::shared_ptr<Entity> entity));
+}
 
 #endif

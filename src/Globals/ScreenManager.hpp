@@ -1,17 +1,15 @@
 #ifndef SCREEN_MANAGER_INSTANCE_HPP
 #define SCREEN_MANAGER_INSTANCE_HPP
 
-#include "../System/ScreenManager.hpp"
-#include "../Screens/IntroScreen.hpp"
+#include "../Screens/Screen.hpp"
+#include <memory>
 
-#ifdef IMPL
+namespace ScreenManager {
+	extern std::shared_ptr<Screen> _currentScreen;
+	extern bool _changeScreenOnNextUpdate;
+	extern std::shared_ptr<Screen> _newScreen;
 
-ScreenManager screenManager = ScreenManager();
-
-#else
-
-extern ScreenManager screenManager;
-
-#endif
-
+	extern void runScreenLoop();
+	extern void changeScreen(std::shared_ptr<Screen> screen);
+}
 #endif

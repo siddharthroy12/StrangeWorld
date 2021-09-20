@@ -6,8 +6,9 @@
 
 class Entity {
 	public:
-		virtual void update() {};
-		virtual void render() {};
+		virtual void update() {}
+		virtual void render() {}
+		virtual ~Entity() {}
 		Id _id;
 		
 };

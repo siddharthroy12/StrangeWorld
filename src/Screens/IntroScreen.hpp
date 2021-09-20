@@ -4,9 +4,10 @@
 #include "./Screen.hpp"
 #include "raylib.h"
 
-class IntroScreen : Screen {
+class IntroScreen : public Screen {
 	private:
 		Texture2D texture;
+		double startTime;
 	public:
 		IntroScreen();
 		void update();

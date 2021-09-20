@@ -3,7 +3,8 @@
 
 class Screen {
 	public:
-		virtual void update() {};
+		virtual void update() {}
+		virtual ~Screen() {}
 };
 
 
