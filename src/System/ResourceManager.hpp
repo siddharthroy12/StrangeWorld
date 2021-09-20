@@ -6,9 +6,7 @@
 #include "../Resources/Resource.hpp"
 
 namespace ResourceManager {
-	extern std::unordered_map<std::string, std::shared_ptr<Resource>>  _resources;
-
-	extern bool resourceExist(std::string name);
+	bool resourceExist(std::string name);
 }
 
 #endif

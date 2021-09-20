@@ -1,6 +1,6 @@
 #include "MainScreen.hpp"
 #include "../Utils/Assets.hpp"
-#include "../Globals/ScreenManager.hpp"
+#include "../System/ScreenManager.hpp"
 #include "GameScreen.hpp"
 
 MainScreen::MainScreen() {

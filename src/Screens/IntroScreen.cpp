@@ -1,6 +1,6 @@
 #include "IntroScreen.hpp"
 #include "../Utils/Assets.hpp"
-#include "../Globals/ScreenManager.hpp"
+#include "../System/ScreenManager.hpp"
 #include "MainScreen.hpp"
 #include <iostream>
 

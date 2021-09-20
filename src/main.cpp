@@ -1,12 +1,12 @@
 #include <iostream>
 #include <ctime>
 #include "raylib.h"
-#include "./Globals/ScreenManager.hpp"
-#include "./Globals/EntitySystem.hpp"
+#include "./System/ScreenManager.hpp"
+#include "./System/EntitySystem.hpp"
 #include "./Utils/Assets.hpp"
 #include "./Screens/IntroScreen.hpp"
-#include "./Globals/Game.hpp"
-#include "./Globals/ResourceManager.hpp"
+#include "./System/Game.hpp"
+#include "./System/ResourceManager.hpp"
 
 #define RENDER_WIDTH 1366
 #define RENDER_HEIGHT 768

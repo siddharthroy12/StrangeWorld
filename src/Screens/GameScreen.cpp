@@ -1,6 +1,6 @@
 #include "GameScreen.hpp"
 #include "../Utils/Assets.hpp"
-#include "../Globals/ScreenManager.hpp"
+#include "../System/ScreenManager.hpp"
 #include <iostream>
 
 GameScreen::GameScreen() {
