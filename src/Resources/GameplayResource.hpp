@@ -6,10 +6,10 @@
 
 struct GameplayResource : public Resource {
 	Texture tileAtlas;
+	std::string _name = "GameplayResource";
 
 	GameplayResource();
 	~GameplayResource();
-
 };
 
 #endif

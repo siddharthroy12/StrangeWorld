@@ -6,8 +6,10 @@
 #include "../Resources/Resource.hpp"
 
 namespace ResourceManager {
-	bool loadResource(std::string name, std::shared_ptr<Resource> resource);
+	void loadResource(std::shared_ptr<Resource> resource);
 	bool resourceLoaded(std::string name);
+	std::shared_ptr<Resource> getResource(std::string name);
+	void unloadResources();
 }
 
 #endif

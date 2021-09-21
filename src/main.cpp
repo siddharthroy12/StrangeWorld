@@ -25,7 +25,7 @@ Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
 
 int main() {
     srand(time(0));
-    SetTraceLogLevel(LOG_NONE);
+    //SetTraceLogLevel(LOG_NONE);
     InitWindow(0, 0, "Window title");
     
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -74,6 +74,7 @@ int main() {
         EndDrawing();
     }
 
+    ResourceManager::unloadResources();
     CloseWindow();
 
     return 0;
