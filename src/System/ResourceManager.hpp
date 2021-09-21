@@ -6,7 +6,8 @@
 #include "../Resources/Resource.hpp"
 
 namespace ResourceManager {
-	bool resourceExist(std::string name);
+	bool loadResource(std::string name, std::shared_ptr<Resource> resource);
+	bool resourceLoaded(std::string name);
 }
 
 #endif
