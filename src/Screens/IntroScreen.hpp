@@ -11,6 +11,7 @@ class IntroScreen : public Screen {
 	public:
 		IntroScreen();
 		void update();
+		void render();
 		~IntroScreen();
 };
 

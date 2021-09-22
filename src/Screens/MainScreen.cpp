@@ -8,11 +8,13 @@ MainScreen::MainScreen() {
 }
 
 void MainScreen::update() {
-	DrawText("Click enter to go start game", 0,0 ,20, BLACK);
-
 	if (IsKeyPressed(KEY_ENTER)) {
 		ScreenManager::changeScreen(std::shared_ptr<Screen>(static_cast<Screen*>(new GameScreen())));
 	}
+}
+
+void MainScreen::render() {
+	DrawText("Click enter to go start game", 0,0 ,20, BLACK);
 }
 
 MainScreen::~MainScreen() {

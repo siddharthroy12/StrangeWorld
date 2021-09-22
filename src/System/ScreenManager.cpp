@@ -6,13 +6,17 @@ namespace ScreenManager {
 	bool _changeScreenOnNextUpdate;
 	std::shared_ptr<Screen> _newScreen;
 
-	void runScreenLoop() {
+	void updateCurrentScreen() {
 		if (_changeScreenOnNextUpdate) {
 			_currentScreen = _newScreen;
 			_changeScreenOnNextUpdate = false;
 		}
 
 		_currentScreen->update();
+	}
+
+	void renderCurrentScreen() {
+		_currentScreen->render();
 	}
 
 	void changeScreen(std::shared_ptr<Screen> screen) {

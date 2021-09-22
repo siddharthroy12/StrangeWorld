@@ -4,6 +4,7 @@
 class Screen {
 	public:
 		virtual void update() {}
+		virtual void render() {}
 		virtual ~Screen() {}
 };
 

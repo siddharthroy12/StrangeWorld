@@ -8,10 +8,12 @@
 class GameScreen : public Screen {
 	private:
 		World world;
+		Camera2D camera;
 
 	public:
 		GameScreen();
 		void update();
+		void render();
 		~GameScreen();
 };
 

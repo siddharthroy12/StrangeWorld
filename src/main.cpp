@@ -25,7 +25,7 @@ Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
 
 int main() {
     srand(time(0));
-    //SetTraceLogLevel(LOG_NONE);
+    SetTraceLogLevel(LOG_NONE);
     InitWindow(0, 0, "Window title");
     
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -50,10 +50,11 @@ int main() {
         Game::virtualMousePos.y = (GetMouseY() - (GetScreenHeight() - (RENDER_HEIGHT*scale))*0.5f)/scale;
         Game::virtualMousePos = clamp_value(Game::virtualMousePos, (Vector2){ 0, 0 }, (Vector2){ (float)RENDER_WIDTH, (float)RENDER_HEIGHT });
 
+        ScreenManager::updateCurrentScreen();
         
         BeginTextureMode(renderTexture);
             ClearBackground(RAYWHITE);
-            ScreenManager::runScreenLoop();
+            ScreenManager::renderCurrentScreen();
         EndTextureMode();
 
         BeginDrawing();

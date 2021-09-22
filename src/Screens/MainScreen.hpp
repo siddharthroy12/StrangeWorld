@@ -8,6 +8,7 @@ class MainScreen : public Screen {
 	public:
 		MainScreen();
 		void update();
+		void render();
 		~MainScreen();
 };
 
