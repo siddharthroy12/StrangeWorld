@@ -2,6 +2,10 @@
 #include "../Utils/Assets.hpp"
 #include <iostream>
 
+std::string GameplayResource::_name() {
+	return "GameplayResource";
+}
+
 GameplayResource::GameplayResource() {
 	this->tileAtlas = LoadTexture(ASSETS_PATH"tiles.png");
 }

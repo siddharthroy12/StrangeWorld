@@ -3,7 +3,7 @@
 #include <string>
 
 struct Resource {
-	std::string _name;
+	virtual std::string _name() {return "Resource";};
 	virtual ~Resource() {};
 };
 

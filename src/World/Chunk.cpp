@@ -1,5 +1,6 @@
 #include "Chunk.hpp"
 #include "../System/ResourceManager.hpp"
+#include <iostream>
 #include "../Resources/GameplayResource.hpp"
 
 
@@ -14,7 +15,7 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 		}
 	}
 
-	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameResources"));
+	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
 
 	BeginTextureMode(this->chunkTexture);
 	
@@ -39,5 +40,12 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 void Chunk::renderChunk() {
 	DrawTexture(this->chunkTexture.texture, this->posX*CHUNK_SIZE_X*BLOCK_TILE_SIZE, this->posY*CHUNK_SIZE_Y*BLOCK_TILE_SIZE, WHITE);
 }
-void updateChunk(int x, int y, Block block) {} 
-Chunk::~Chunk() {}
+
+void updateChunk(int x, int y, Block block) {
+
+}
+
+Chunk::~Chunk() {
+	std::cout << "Thi is called" << std::endl;
+	UnloadRenderTexture(this->chunkTexture);
+}

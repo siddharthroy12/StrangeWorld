@@ -1,9 +1,9 @@
 #include <unordered_map>
 #include <memory>
+#include <iostream>
 #include "../Resources/Resource.hpp"
 
 namespace ResourceManager {
-
 	std::unordered_map<std::string, std::shared_ptr<Resource>>  _resources;
 
 	bool resourceLoaded(std::string name) {
@@ -19,14 +19,14 @@ namespace ResourceManager {
 	}
 
 	void loadResource(std::shared_ptr<Resource> resource) {
-		if (!resourceLoaded(resource->_name)) {
-			_resources[resource->_name] = resource;
+		std::cout << "LoadResource: " << resource->_name() << std::endl;
+		if (!resourceLoaded(resource->_name())) {
+			_resources[resource->_name()] = resource;
 		}
 	}
 
 	void unloadResources() {
-		for (const auto& kv : _resources) {
-			_resources.erase(kv.first);
-		}
+		std::cout << "unloading" << std::endl;
+		_resources.clear();
 	}
 }
