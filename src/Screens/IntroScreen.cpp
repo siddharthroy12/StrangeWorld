@@ -11,7 +11,7 @@ IntroScreen::IntroScreen() {
 
 void IntroScreen::update() {
     if (GetTime() - startTime > 0.5) {
-        ScreenManager::changeScreen(std::shared_ptr<Screen>(static_cast<Screen*>(new MainScreen())));
+        ScreenManager::changeScreen(static_cast<Screen*>(new MainScreen()));
     }
 }
 

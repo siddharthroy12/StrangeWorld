@@ -1,5 +1,5 @@
-#ifndef PLAYER_RESOURCE_HPP
-#define PLAYER_RESOURCE_HPP
+#ifndef GAMEPLAY_RESOURCE_HPP
+#define GAMEPLAY_RESOURCE_HPP
 
 #include "Resource.hpp"
 #include "raylib.h"

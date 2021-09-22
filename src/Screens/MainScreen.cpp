@@ -9,7 +9,7 @@ MainScreen::MainScreen() {
 
 void MainScreen::update() {
 	if (IsKeyPressed(KEY_ENTER)) {
-		ScreenManager::changeScreen(std::shared_ptr<Screen>(static_cast<Screen*>(new GameScreen())));
+		ScreenManager::changeScreen(static_cast<Screen*>(new GameScreen()));
 	}
 }
 

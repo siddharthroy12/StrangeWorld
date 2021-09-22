@@ -2,12 +2,13 @@
 #include <memory>
 
 namespace ScreenManager {
-	std::shared_ptr<Screen> _currentScreen;
+	Screen* _currentScreen;
 	bool _changeScreenOnNextUpdate;
-	std::shared_ptr<Screen> _newScreen;
+	Screen* _newScreen;
 
 	void updateCurrentScreen() {
 		if (_changeScreenOnNextUpdate) {
+			delete _currentScreen;
 			_currentScreen = _newScreen;
 			_changeScreenOnNextUpdate = false;
 		}
@@ -19,8 +20,12 @@ namespace ScreenManager {
 		_currentScreen->render();
 	}
 
-	void changeScreen(std::shared_ptr<Screen> screen) {
+	void changeScreen(Screen* screen) {
 		_changeScreenOnNextUpdate = true;
 		_newScreen = screen;
+	}
+
+	void unloadScreen() {
+		delete _currentScreen;
 	}
 }

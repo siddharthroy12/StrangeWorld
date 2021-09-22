@@ -47,5 +47,5 @@ void updateChunk(int x, int y, Block block) {
 
 Chunk::~Chunk() {
 	std::cout << "Thi is called" << std::endl;
-	UnloadRenderTexture(this->chunkTexture);
+	//UnloadRenderTexture(this->chunkTexture);
 }

@@ -38,7 +38,7 @@ int main() {
     EntitySystem::create(std::shared_ptr<Entity>(new Entity()));
 
     // Set default screen
-    ScreenManager::changeScreen(std::shared_ptr<Screen>(static_cast<Screen*>(new IntroScreen())));
+    ScreenManager::changeScreen(static_cast<Screen*>(new IntroScreen()));
 
     while (!Game::shouldExit && !WindowShouldClose()) {
         //mousePos = GetMousePosition();
@@ -75,6 +75,7 @@ int main() {
         EndDrawing();
     }
 
+    ScreenManager::unloadScreen();
     ResourceManager::unloadResources();
     CloseWindow();
 

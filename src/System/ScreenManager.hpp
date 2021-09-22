@@ -7,6 +7,7 @@
 namespace ScreenManager {
 	void renderCurrentScreen();
 	void updateCurrentScreen();
-	void changeScreen(std::shared_ptr<Screen> screen);
+	void changeScreen(Screen* screen);
+	void unloadScreen();
 }
 #endif
