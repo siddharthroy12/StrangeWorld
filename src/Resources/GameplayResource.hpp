@@ -3,9 +3,10 @@
 
 #include "Resource.hpp"
 #include "raylib.h"
+#include <thread>
 
 struct GameplayResource : public Resource {
-	Texture tileAtlas;
+	Image tileAtlas;
 	std::string _name();
 	GameplayResource();
 	~GameplayResource();

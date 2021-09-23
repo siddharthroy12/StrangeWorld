@@ -12,13 +12,15 @@
 class Chunk {
 	private:
 		std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks;
-		RenderTexture2D chunkTexture;
+		Texture chunkTexture;
+		Image chunkImage;
 		int posX;
 		int posY;
-
+		bool needToLoadTexture = true;
 	public:
 		Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks, int x, int y);
 		void renderChunk();
+		void loadTexture();
 		void updateChunk(int x, int y, Block block);
 		int getPosX() const;
 		int getPosY() const;

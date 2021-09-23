@@ -1,5 +1,4 @@
 #include "World.hpp"
-
 #include <iostream>
 
 World::World() {
@@ -12,6 +11,7 @@ World::World() {
 			}
 		}
 	}
+
 }
 
 std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> World::getChunkBlocks(int x, int y) {

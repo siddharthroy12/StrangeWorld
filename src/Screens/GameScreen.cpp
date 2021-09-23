@@ -11,6 +11,8 @@
 GameScreen::GameScreen() {
 	ResourceManager::loadResource(std::shared_ptr<Resource>(static_cast<Resource*>(new GameplayResource())));
 
+	this->backgroundThread = std::thread([this]() { this->backgroundThreadCallback(); });
+
 	this->camera = (Camera2D){
 		.offset = (Vector2){ 1366/2, 768/2 }, // Remind me to fix this
 		.target = (Vector2){ 0.0f, 0.0f },
@@ -22,8 +24,32 @@ GameScreen::GameScreen() {
 	this->pos.y = 1.0f;
 }
 
-void GameScreen::update() {
+void GameScreen::backgroundThreadCallback() {
+	while (!this->endBackgroundThread) {
+		std::cout << "Running" << std::endl;
+		int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
+		int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
+		
+		world.loadChunk(chunkX, chunkY);
 
+		std::vector<int> ChunksX;
+		std::vector<int> ChunksY;
+
+		for (const auto& i : world.loadedChunks) {
+			if ((i.second->getPosX() != chunkX) || (i.second->getPosY() != chunkY)) {
+				ChunksX.push_back(i.second->getPosX());
+				ChunksY.push_back(i.second->getPosY());
+				std::cout << "load" << std::endl;
+			}
+		}
+
+		for (int i = 0; i < ChunksX.size(); i++) {
+			world.unloadChunk(ChunksX[i], ChunksY[i]);
+		}
+	}
+}
+
+void GameScreen::update() {
 	if (IsKeyDown(KEY_RIGHT)) {
 		pos.x += 500 * GetFrameTime();
 	}
@@ -40,38 +66,13 @@ void GameScreen::update() {
 		pos.y += 500 * GetFrameTime();
 	}
 
-	int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
-	int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
-
 	camera.target = pos;
-	
-	world.loadChunk(chunkX, chunkY);
-
-	std::vector<int> ChunksX;
-	std::vector<int> ChunksY;
-
-
-	for (const auto& i : world.loadedChunks) {
-		if ((i.second->getPosX() != chunkX) || (i.second->getPosY() != chunkY)) {
-			ChunksX.push_back(i.second->getPosX());
-			ChunksY.push_back(i.second->getPosY());
-			std::cout << "load" << std::endl;
-		}
-	}
-
-	// world.for_each([chunkX, chunkY, &ChunksX, &ChunksY](std::shared_ptr<Chunk> chunk) {
-	// 	if ((chunk->getPosX() != chunkX) && (chunk->getPosY() != chunkY)) {
-	// 		ChunksX.push_back(chunkX);
-	// 		ChunksY.push_back(chunkY);
-	// 	}
-	// });
-
-	for (int i = 0; i < ChunksX.size(); i++) {
-		world.unloadChunk(ChunksX[i], ChunksY[i]);
-	}
 }
 
 void GameScreen::render() {
+	for (const auto& i : world.loadedChunks) {
+		i.second->loadTexture();
+	}
 	//DrawText("This is game screen", 0,0 ,20, BLACK);
 	int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
@@ -92,5 +93,7 @@ void GameScreen::render() {
 }
 
 GameScreen::~GameScreen() {
+	this->endBackgroundThread = true;
+	this->backgroundThread.join();
 	std::cout<< "endme" <<std::endl;
 }
