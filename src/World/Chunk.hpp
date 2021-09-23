@@ -20,6 +20,8 @@ class Chunk {
 		Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks, int x, int y);
 		void renderChunk();
 		void updateChunk(int x, int y, Block block);
+		int getPosX() const;
+		int getPosY() const;
 		~Chunk();
 };
 

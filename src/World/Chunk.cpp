@@ -37,6 +37,14 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 	EndTextureMode();
 }
 
+int Chunk::getPosX() const {
+	return this->posX;
+}
+
+int Chunk::getPosY() const {
+	return this->posY;
+}
+
 void Chunk::renderChunk() {
 	DrawTexture(this->chunkTexture.texture, this->posX*CHUNK_SIZE_X*BLOCK_TILE_SIZE, this->posY*CHUNK_SIZE_Y*BLOCK_TILE_SIZE, WHITE);
 }

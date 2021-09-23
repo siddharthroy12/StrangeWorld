@@ -26,7 +26,7 @@ Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
 int main() {
     srand(time(0));
     SetTraceLogLevel(LOG_NONE);
-    InitWindow(0, 0, "Window title");
+    InitWindow(0, 0, "StrangeWorld");
     
     SetWindowState(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(60);

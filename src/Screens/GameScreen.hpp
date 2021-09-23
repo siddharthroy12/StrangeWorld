@@ -9,6 +9,7 @@ class GameScreen : public Screen {
 	private:
 		World world;
 		Camera2D camera;
+		Vector2 pos;
 
 	public:
 		GameScreen();
