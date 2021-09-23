@@ -12,8 +12,10 @@
 class Chunk {
 	private:
 		std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks;
-		Texture chunkTexture;
+		RenderTexture2D chunkTexture;
 		Image chunkImage;
+		Mesh tempMesh;
+		Camera camera;
 		int posX;
 		int posY;
 		bool needToLoadTexture = true;

@@ -26,7 +26,7 @@ GameScreen::GameScreen() {
 
 void GameScreen::backgroundThreadCallback() {
 	while (!this->endBackgroundThread) {
-		std::cout << "Running" << std::endl;
+		//std::cout << "Running" << std::endl;
 		int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 		int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
 		
@@ -67,12 +67,14 @@ void GameScreen::update() {
 	}
 
 	camera.target = pos;
-}
 
-void GameScreen::render() {
 	for (const auto& i : world.loadedChunks) {
 		i.second->loadTexture();
 	}
+}
+
+void GameScreen::render() {
+	
 	//DrawText("This is game screen", 0,0 ,20, BLACK);
 	int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;

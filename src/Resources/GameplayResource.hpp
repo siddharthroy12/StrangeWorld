@@ -6,7 +6,7 @@
 #include <thread>
 
 struct GameplayResource : public Resource {
-	Image tileAtlas;
+	Texture2D tileAtlas;
 	std::string _name();
 	GameplayResource();
 	~GameplayResource();

@@ -7,10 +7,10 @@ std::string GameplayResource::_name() {
 }
 
 GameplayResource::GameplayResource() {
-	this->tileAtlas = LoadImage(ASSETS_PATH"tiles.png");
+	this->tileAtlas = LoadTexture(ASSETS_PATH"tiles.png");
 }
 
 GameplayResource::~GameplayResource() {
-	UnloadImage(this->tileAtlas);
+	UnloadTexture(this->tileAtlas);
 	std::cout<< "done" << std::endl;
 }
