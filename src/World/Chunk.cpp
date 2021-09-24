@@ -7,12 +7,11 @@
 Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, int x, int y) {
 	this->posX = x; this->posY = y;
 
-	camera.position = (Vector3){ 0.0f, 10.0f, 10.0f }; // Camera position
+	camera.position = (Vector3){ 0.0f, 20.0f, 0.0f }; // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.up = (Vector3){ 0.0f, 0.0f, 1.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;                   // Camera mode type
-
+	camera.projection = CAMERA_ORTHOGRAPHIC;
 	this->tempMesh = GenMeshCube(1, 1, 1);
 	//this->chunkTexture = LoadRenderTexture(BLOCK_TILE_SIZE * CHUNK_SIZE_X, BLOCK_TILE_SIZE * CHUNK_SIZE_Y);
 
@@ -23,40 +22,6 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 	}
 
 	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
-
-	// BeginTextureMode(this->chunkTexture);
-	
-	// for (int x = 0; x < CHUNK_SIZE_X; x++) {
-	// 	for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-	// 		if (this->blocks[x][y] == Block::DIRT) {
-	// 			ImageDrawRectangle(
-	// 				&this->chunkImage,
-	// 				(float)BLOCK_TILE_SIZE * x,
-	// 				(float)BLOCK_TILE_SIZE * y,
-	// 				(float)(BLOCK_TILE_SIZE * x) + BLOCK_TILE_SIZE,
-	// 				(float)(BLOCK_TILE_SIZE * y) + BLOCK_TILE_SIZE,
-	// 				GREEN
-	// 			);
-	// 			// ImageDraw(
-	// 			// 	&this->chunkImage,
-	// 			// 	gameplayResource->tileAtlas,
-	// 			// 	(Rectangle){ 0, 0, 16, 16 },
-	// 			// 	(Rectangle){(float)BLOCK_TILE_SIZE * x, (float)BLOCK_TILE_SIZE * y, (float)(BLOCK_TILE_SIZE * x) + BLOCK_TILE_SIZE, (float)(BLOCK_TILE_SIZE * y) + BLOCK_TILE_SIZE },
-	// 			// 	(Color){ 0, 0, 0, 0 }
-	// 			// );
-	// 			// DrawTexturePro(
-	// 			// 	gameplayResource->tileAtlas,
-	// 			// 	(Rectangle){ 0, 0, 16, 16 },
-	// 			// 	(Rectangle){(float)BLOCK_TILE_SIZE * x, (float)BLOCK_TILE_SIZE * y, (float)(BLOCK_TILE_SIZE * x) + BLOCK_TILE_SIZE, (float)(BLOCK_TILE_SIZE * y) + BLOCK_TILE_SIZE },
-	// 			// 	(Vector2){ 0.0f, 0.0f },
-	// 			// 	0,
-	// 			// 	WHITE
-	// 			// );
-	// 		}
-	// 	}
-	// }
-
-	// EndTextureMode();
 	this->needToLoadTexture = true;
 }
 
@@ -78,12 +43,11 @@ void Chunk::loadTexture() {
 		this->chunkTexture = LoadRenderTexture(BLOCK_TILE_SIZE * CHUNK_SIZE_X, BLOCK_TILE_SIZE * CHUNK_SIZE_Y);
 		std::cout << "yes" << std::endl;
 		BeginTextureMode(this->chunkTexture);
-		ClearBackground(RAYWHITE);
+		ClearBackground((Color){ 0,0,0,0 });
 			BeginMode3D(camera);
 				DrawCube((Vector3){ 0.0f, 0.0f, 0.0f }, 1, 1, 1, RED);
-				DrawGrid(10, 1.0f);
+				DrawGrid(100, 4.5f);
 			EndMode3D();
-			DrawRectangle(0,0, 100, 100, RED);
 		EndTextureMode();
 		this->needToLoadTexture = false;
 	}
