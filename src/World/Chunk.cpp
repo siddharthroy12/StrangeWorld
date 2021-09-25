@@ -4,7 +4,6 @@
 #include "../Resources/GameplayResource.hpp"
 #include "../../libs/raytile/raytile.h"
 
-
 Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, int x, int y) {
 	this->posX = x; this->posY = y; // Set the position of chunk
 

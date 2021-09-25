@@ -9,6 +9,7 @@
 #include "../Resources/GameplayResource.hpp"
 #include "../System/EntitySystem.hpp"
 #include "../Entities/Player.hpp"
+#include "../World/WorldSize.hpp"
 
 GameScreen::GameScreen() {
 	// Load necessary resources
@@ -27,6 +28,8 @@ GameScreen::GameScreen() {
 
 	// Create player entity
 	EntitySystem::create(std::shared_ptr<Entity>(static_cast<Entity*>(new Player())));
+
+	World::generateMap();
 }
 
 void GameScreen::backgroundThreadCallback() {
@@ -43,7 +46,7 @@ void GameScreen::backgroundThreadCallback() {
 		for (int x = chunkX - chunkLoadRange; x <= chunkX + chunkLoadRange; x++) {
 			for (int y = chunkY - chunkLoadRange; y <= chunkY + chunkLoadRange; y++) {
 				if ((x > -1) && (x < WORLD_SIZE_X/CHUNK_SIZE_X) && (y > -1) && (y < WORLD_SIZE_Y/CHUNK_SIZE_Y)) {
-					world.loadChunk(x, y);
+					World::loadChunk(x, y);
 				}
 			}
 		}
@@ -53,7 +56,7 @@ void GameScreen::backgroundThreadCallback() {
 		std::vector<int> chunksToUnloadY;
 
 		// Get the postion of chunk to unload
-		for (const auto& i : world.loadedChunks) {
+		for (const auto& i : World::loadedChunks) {
 			if (
 				((std::abs(i.second->getPosX() - chunkX) > chunkLoadRange)) ||
 				((std::abs(i.second->getPosY() - chunkY) > chunkLoadRange))
@@ -65,7 +68,7 @@ void GameScreen::backgroundThreadCallback() {
 
 		// Unload chunks
 		for (int i = 0; i < chunksToUnloadX.size(); i++) {
-			world.unloadChunk(chunksToUnloadX[i], chunksToUnloadY[i]);
+			World::unloadChunk(chunksToUnloadX[i], chunksToUnloadY[i]);
 		}
 	}
 }
@@ -82,7 +85,7 @@ void GameScreen::update() {
 	}
 
 	// Load texures (frambuffer) of loaded chunks
-	for (const auto& i : world.loadedChunks) {
+	for (const auto& i : World::loadedChunks) {
 		i.second->loadTexture();
 	}
 }
@@ -99,7 +102,7 @@ void GameScreen::render() {
 	// Draw inside camera
 	BeginMode2D(camera);
 		// Render chunks
-		for (const auto& i : world.loadedChunks) {
+		for (const auto& i : World::loadedChunks) {
 			i.second->renderChunk();
 		}
 

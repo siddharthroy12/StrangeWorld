@@ -8,12 +8,10 @@
 #include "./Screens/IntroScreen.hpp"
 #include "./System/Game.hpp"
 #include "./System/ResourceManager.hpp"
+#include "./World/World.hpp"
 
 #define RENDER_WIDTH 1366
 #define RENDER_HEIGHT 768
-
-#define max(a, b) ((a)>(b)? (a) : (b))
-#define min(a, b) ((a)<(b)? (a) : (b))
 
 // Get campled vector
 Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
@@ -45,7 +43,7 @@ int main() {
     // Game loop
     while (!Game::shouldExit && !WindowShouldClose()) {
         // Compute required framebuffer scaling
-        float scale = min((float)GetScreenWidth()/RENDER_WIDTH, (float)GetScreenHeight()/RENDER_HEIGHT);
+        float scale = std::min((float)GetScreenWidth()/RENDER_WIDTH, (float)GetScreenHeight()/RENDER_HEIGHT);
 
         // Update virtual mouse (clamped mouse value behind game screen)
         Game::virtualMousePos.x = (GetMouseX() - (GetScreenWidth() - (RENDER_WIDTH*scale))*0.5f)/scale;
@@ -82,8 +80,9 @@ int main() {
 
     // Unload necessary stuffs before closing window
     ScreenManager::unloadScreen();
-    ResourceManager::unloadResources();
     EntitySystem::unloadEntities();
+    ResourceManager::unloadResources();
+    World::unloadWorld();
 
     CloseWindow();
 
