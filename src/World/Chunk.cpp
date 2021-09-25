@@ -2,6 +2,7 @@
 #include "../System/ResourceManager.hpp"
 #include <iostream>
 #include "../Resources/GameplayResource.hpp"
+#include "../../libs/raytile/raytile.h"
 
 
 Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, int x, int y) {
@@ -12,17 +13,22 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
     camera.up = (Vector3){ 0.0f, 0.0f, 1.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
 	camera.projection = CAMERA_ORTHOGRAPHIC;
-	this->tempMesh = GenMeshCube(1, 1, 1);
+	
 	//this->chunkTexture = LoadRenderTexture(BLOCK_TILE_SIZE * CHUNK_SIZE_X, BLOCK_TILE_SIZE * CHUNK_SIZE_Y);
 
 	for (int x = 0; x < CHUNK_SIZE_X; x++) {
 		for (int y = 0; y < CHUNK_SIZE_Y; y++) {
 			this->blocks[x][y] = _blocks[x][y];
+			this->tileTextureMap[x][y][0] = 0;
+			this->tileTextureMap[x][y][1] = 0;
 		}
 	}
 
-	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
+	this->tempMesh = rtl_gen_tile_mesh(1, CHUNK_SIZE_X, CHUNK_SIZE_Y, 8, 8, this->tileTextureMap);
+
+	
 	this->needToLoadTexture = true;
+	this->needToLoadModel = true;
 }
 
 int Chunk::getPosX() const {
@@ -39,14 +45,23 @@ void Chunk::renderChunk() {
 }
 
 void Chunk::loadTexture() {
+	if (this->needToLoadModel) {
+		std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
+		UploadMesh(&this->tempMesh, false);
+		this->tempModel = LoadModelFromMesh(this->tempMesh);
+		tempModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = gameplayResource->tileAtlas;
+		this->needToLoadModel = false;
+	}
 	if (this->needToLoadTexture) {
 		this->chunkTexture = LoadRenderTexture(BLOCK_TILE_SIZE * CHUNK_SIZE_X, BLOCK_TILE_SIZE * CHUNK_SIZE_Y);
 		std::cout << "yes" << std::endl;
 		BeginTextureMode(this->chunkTexture);
 		ClearBackground((Color){ 0,0,0,0 });
 			BeginMode3D(camera);
-				DrawCube((Vector3){ 0.0f, 0.0f, 0.0f }, 1, 1, 1, RED);
-				DrawGrid(100, 4.5f);
+				//DrawModel(this->tempModel, (Vector3){ 0.0f, 0.0f, 0.0f }, 1, WHITE);
+				DrawModelWires(this->tempModel, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, WHITE);
+				//DrawCube((Vector3){ 0.0f, 0.0f, 0.0f }, 1, 1, 1, RED);
+				//DrawGrid(100, 4.5f);
 			EndMode3D();
 		EndTextureMode();
 		this->needToLoadTexture = false;

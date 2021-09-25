@@ -87,7 +87,7 @@ void GameScreen::render() {
 		chunk->renderChunk();
 	});
 
-	DrawCircleV(pos, 10, RED);
+	DrawCircleV(pos, 16, RED);
 
 	DrawRectangleLines(0, 0, CHUNK_SIZE_X*BLOCK_TILE_SIZE, CHUNK_SIZE_Y*BLOCK_TILE_SIZE, RED);
 	
