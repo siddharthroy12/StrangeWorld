@@ -18,9 +18,7 @@ namespace EntitySystem {
 		_entities.erase(id);
 	}
 
-	void for_each(void (*func)(std::shared_ptr<Entity> entity)) {
-		for (const auto& kv : _entities) {
-			func(kv.second);
-		}
+	void unloadEntities() {
+		_entities.clear();
 	}
 }

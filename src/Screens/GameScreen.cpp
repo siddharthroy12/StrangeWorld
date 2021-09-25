@@ -3,6 +3,8 @@
 #include "../System/ScreenManager.hpp"
 #include "../System/ResourceManager.hpp"
 #include "../Resources/GameplayResource.hpp"
+#include "../System/EntitySystem.hpp"
+#include "../Entities/Player.hpp"
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -20,8 +22,7 @@ GameScreen::GameScreen() {
 		.zoom = 5.0f
 	};
 
-	this->pos.x = 1.0f;
-	this->pos.y = 1.0f;
+	EntitySystem::create(std::shared_ptr<Entity>(static_cast<Entity*>(new Player())));
 }
 
 void GameScreen::backgroundThreadCallback() {
@@ -59,27 +60,13 @@ void GameScreen::backgroundThreadCallback() {
 }
 
 void GameScreen::update() {
-	if (IsKeyDown(KEY_RIGHT)) {
-		pos.x += 300 * GetFrameTime();
+	for (const auto& i : EntitySystem::_entities) {
+		i.second->update();
+
+		if (i.second->getType() == "Player") {
+			camera.target = std::dynamic_pointer_cast<Player>(i.second)->getPositon();
+		}
 	}
-
-	if (IsKeyDown(KEY_LEFT)) {
-		pos.x -= 300 * GetFrameTime();
-	}
-
-	if (IsKeyDown(KEY_UP)) {
-		pos.y -= 300 * GetFrameTime();
-	}
-
-	if (IsKeyDown(KEY_DOWN)) {
-		pos.y += 300 * GetFrameTime();
-	}
-
-	// if (IsKeyDown(KEY_SPACE)) {
-	// 	std::cout << world.loadedChunks.cend() << std::endl;
-	// }
-
-	camera.target = pos;
 
 	for (const auto& i : world.loadedChunks) {
 		i.second->loadTexture();
@@ -89,7 +76,6 @@ void GameScreen::update() {
 void GameScreen::render() {
 	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
 	
-	//DrawText("This is game screen", 0,0 ,20, BLACK);
 	int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
 	DrawText(TextFormat("ChunkX: %d", chunkX), 0,0, 20 , BLACK);
@@ -97,31 +83,15 @@ void GameScreen::render() {
 
 	BeginMode2D(camera);
 	
-	world.for_each([](std::shared_ptr<Chunk> chunk) {
-		chunk->renderChunk();
-	});
+		world.for_each([](std::shared_ptr<Chunk> chunk) {
+			chunk->renderChunk();
+		});
 
-	DrawCircleV(pos, 16/2, RED);
+		for (const auto& i : EntitySystem::_entities) {
+			i.second->render();
+		}
 
-	DrawTexturePro(gameplayResource->player,
-		(Rectangle) {
-			.x =0,
-			.y = 0,
-			.width = 16,
-			.height = 32
-		},
-		(Rectangle) {
-			.x = pos.x - gameplayResource->player.width /2,
-			.y = pos.y -gameplayResource->player.height/2,
-			.width= 16,
-			.height = 32,
-		},
-		(Vector2){ 0.0f, 0.0f },
-		0.0f, WHITE
-	);
-	//DrawTexture(gameplayResource->player, pos.x - gameplayResource->player.width /2, pos.y -gameplayResource->player.height/2, WHITE);
-
-	DrawRectangleLines(0, 0, CHUNK_SIZE_X*BLOCK_TILE_SIZE, CHUNK_SIZE_Y*BLOCK_TILE_SIZE, RED);
+		DrawRectangleLines(0, 0, CHUNK_SIZE_X*BLOCK_TILE_SIZE, CHUNK_SIZE_Y*BLOCK_TILE_SIZE, RED);
 	
 	EndMode2D();
 	

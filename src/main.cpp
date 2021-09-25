@@ -77,6 +77,7 @@ int main() {
 
     ScreenManager::unloadScreen();
     ResourceManager::unloadResources();
+    EntitySystem::unloadEntities();
     CloseWindow();
 
     return 0;
