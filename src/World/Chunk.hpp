@@ -12,17 +12,17 @@
 class Chunk {
 	private:
 		std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks;
-		int tileTextureMap[CHUNK_SIZE_X][CHUNK_SIZE_Y][2];
-		RenderTexture2D chunkTexture;
-
-		Image chunkImage;
-		Mesh tempMesh;
-		Model tempModel;
-		Camera camera;
+		int tileTextureMap[CHUNK_SIZE_X][CHUNK_SIZE_Y][2]; // Contains texture coords for tilemap
+		RenderTexture2D chunkTexture; // to draw tilemap on
+		Mesh mesh; // Tilemap mesh
+		Model model; // Tilemap model
+		Camera camera; // tilemap is drawn on 3D camera
 		int posX;
 		int posY;
 		bool needToLoadModel;
-		bool needToLoadTexture = true;
+		bool needToRenderTexture;
+		bool needToLoadTexture;
+
 	public:
 		Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks, int x, int y);
 		void renderChunk();

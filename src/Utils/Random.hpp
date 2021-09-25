@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 
+// Stolen from Java to get non-biased random number
 static int randRange(int min, int max) {
     int n = max - min + 1;
     int remainder = RAND_MAX % n;

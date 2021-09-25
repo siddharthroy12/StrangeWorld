@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <cmath>
 #include "raylib.h"
 #include "./System/ScreenManager.hpp"
 #include "./System/EntitySystem.hpp"
@@ -14,6 +15,7 @@
 #define max(a, b) ((a)>(b)? (a) : (b))
 #define min(a, b) ((a)<(b)? (a) : (b))
 
+// Get campled vector
 Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
     Vector2 result = value;
     result.x = (result.x > max.x)? max.x : result.x;
@@ -24,24 +26,24 @@ Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
 }
 
 int main() {
-    srand(time(0));
-    SetTraceLogLevel(LOG_NONE);
-    InitWindow(0, 0, "StrangeWorld");
+    srand(time(0)); // Set seed for randrom numbers
+    SetTraceLogLevel(LOG_NONE); // Disable raylib loggin
+
+    InitWindow(0, 0, "StrangeWorld"); // Create full screen window
+    SetWindowState(FLAG_WINDOW_RESIZABLE); // Make window resizable
     
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
-    SetTargetFPS(60);
-    SetExitKey(0);
+    SetTargetFPS(60); // Limit FPS to 60
+    SetExitKey(0); // Disable escape to exit
     
+    // Setup our framebuffer
     RenderTexture2D renderTexture = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
     SetTextureFilter(renderTexture.texture, FILTER_BILINEAR);
 
-    EntitySystem::create(std::shared_ptr<Entity>(new Entity()));
-
-    // Set default screen
+    // Start with intro screen
     ScreenManager::changeScreen(static_cast<Screen*>(new IntroScreen()));
 
+    // Game loop
     while (!Game::shouldExit && !WindowShouldClose()) {
-        //mousePos = GetMousePosition();
         // Compute required framebuffer scaling
         float scale = min((float)GetScreenWidth()/RENDER_WIDTH, (float)GetScreenHeight()/RENDER_HEIGHT);
 
@@ -49,14 +51,17 @@ int main() {
         Game::virtualMousePos.x = (GetMouseX() - (GetScreenWidth() - (RENDER_WIDTH*scale))*0.5f)/scale;
         Game::virtualMousePos.y = (GetMouseY() - (GetScreenHeight() - (RENDER_HEIGHT*scale))*0.5f)/scale;
         Game::virtualMousePos = clamp_value(Game::virtualMousePos, (Vector2){ 0, 0 }, (Vector2){ (float)RENDER_WIDTH, (float)RENDER_HEIGHT });
-
+        
+        // Update current screen
         ScreenManager::updateCurrentScreen();
         
+        // Render current screen to framebuffer
         BeginTextureMode(renderTexture);
             ClearBackground(RAYWHITE);
             ScreenManager::renderCurrentScreen();
         EndTextureMode();
 
+        // Render framebuffer to screen with correct scaling
         BeginDrawing();
             ClearBackground(BLACK);
             DrawTexturePro(
@@ -75,10 +80,15 @@ int main() {
         EndDrawing();
     }
 
+    // Unload necessary stuffs before closing window
     ScreenManager::unloadScreen();
     ResourceManager::unloadResources();
     EntitySystem::unloadEntities();
+
     CloseWindow();
+
+    // Goodbye message
+    std::cout << "Hope you play again!" << std::endl;
 
     return 0;
 }

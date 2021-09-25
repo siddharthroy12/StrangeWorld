@@ -2,7 +2,6 @@
 #define ID_HPP
 
 #include <string>
-
 #include "Random.hpp"
 
 typedef int Id;

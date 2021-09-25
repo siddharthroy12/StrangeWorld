@@ -14,5 +14,4 @@ GameplayResource::GameplayResource() {
 GameplayResource::~GameplayResource() {
 	UnloadTexture(this->tileAtlas);
 	UnloadTexture(this->player);
-	std::cout<< "Gameplay resource unload" << std::endl;
 }

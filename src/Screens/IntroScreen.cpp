@@ -25,7 +25,4 @@ void IntroScreen::render() {
     DrawText(text, GetScreenWidth() / 2 - text_size.x / 2, texture_y + texture.height + text_size.y + 10, 20, BLACK);
 }
 
-IntroScreen::~IntroScreen() {
-    std::cout << "Intro screen unload" << std::endl;
-
-}
+IntroScreen::~IntroScreen() { }
