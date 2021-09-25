@@ -34,18 +34,19 @@ void World::for_each(void (*func)(std::shared_ptr<Chunk> chunk)) {
 
 void World::loadChunk(int x, int y) {
 	if (loadedChunks.find(std::to_string(x)+"-"+std::to_string(y)) == loadedChunks.end()) {
-		std::cout << "onetime" << std::endl;
+		std::cout << "Chunk " << "X: " << x << " " << "Y: " << y << " loaded" << std::endl;
 		loadedChunks[std::to_string(x)+"-"+std::to_string(y)] = std::shared_ptr<Chunk>(new Chunk(this->getChunkBlocks(x,y), x, y));
 	}
 }
 
 void World::unloadChunk(int x, int y) {
 	if (loadedChunks.find(std::to_string(x)+"-"+std::to_string(y)) != loadedChunks.end()) {
+		std::cout << "Chunk " << "X: " << x << " " << "Y: " << y << " unloaded" << std::endl;
 		loadedChunks.erase(std::to_string(x)+"-"+std::to_string(y));
 	}
 	
 }
 
 World::~World() {
-	std::cout << "world end" << std::endl;
+	std::cout << "World object deleted" << std::endl;
 }

@@ -7,6 +7,7 @@
 
 struct GameplayResource : public Resource {
 	Texture2D tileAtlas;
+	Texture2D player;
 	std::string _name();
 	GameplayResource();
 	~GameplayResource();

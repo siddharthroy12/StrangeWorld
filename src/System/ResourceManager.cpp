@@ -26,7 +26,7 @@ namespace ResourceManager {
 	}
 
 	void unloadResources() {
-		std::cout << "unloading" << std::endl;
+		std::cout << "Unloading all resources" << std::endl;
 		_resources.clear();
 	}
 }

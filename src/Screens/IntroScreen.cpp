@@ -26,6 +26,6 @@ void IntroScreen::render() {
 }
 
 IntroScreen::~IntroScreen() {
-    std::cout << "g" << std::endl;
+    std::cout << "Intro screen unload" << std::endl;
 
 }

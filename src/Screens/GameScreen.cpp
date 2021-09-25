@@ -17,7 +17,7 @@ GameScreen::GameScreen() {
 		.offset = (Vector2){ 1366/2, 768/2 }, // Remind me to fix this
 		.target = (Vector2){ 0.0f, 0.0f },
 		.rotation = 0.0f,
-		.zoom = 1.0f
+		.zoom = 5.0f
 	};
 
 	this->pos.x = 1.0f;
@@ -25,46 +25,59 @@ GameScreen::GameScreen() {
 }
 
 void GameScreen::backgroundThreadCallback() {
+	int chunkLoadRange = 1;
+
 	while (!this->endBackgroundThread) {
-		//std::cout << "Running" << std::endl;
 		int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 		int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
 		
-		world.loadChunk(chunkX, chunkY);
-
-		std::vector<int> ChunksX;
-		std::vector<int> ChunksY;
-
-		for (const auto& i : world.loadedChunks) {
-			if ((i.second->getPosX() != chunkX) || (i.second->getPosY() != chunkY)) {
-				ChunksX.push_back(i.second->getPosX());
-				ChunksY.push_back(i.second->getPosY());
-				std::cout << "load" << std::endl;
+		for (int x = chunkX - chunkLoadRange; x <= chunkX + chunkLoadRange; x++) {
+			for (int y = chunkY - chunkLoadRange; y <= chunkY + chunkLoadRange; y++) {
+				if ((x > -1) && (x < WORLD_SIZE_X/CHUNK_SIZE_X) && (y > -1) && (y < WORLD_SIZE_Y/CHUNK_SIZE_Y)) {
+					world.loadChunk(x, y);
+				}
 			}
 		}
 
-		for (int i = 0; i < ChunksX.size(); i++) {
-			world.unloadChunk(ChunksX[i], ChunksY[i]);
+		std::vector<int> chunksToUnloadX;
+		std::vector<int> chunksToUnloadY;
+
+		for (const auto& i : world.loadedChunks) {
+			if (
+				((std::abs(i.second->getPosX() - chunkX) > chunkLoadRange)) ||
+				((std::abs(i.second->getPosY() - chunkY) > chunkLoadRange))
+			) {
+				chunksToUnloadX.push_back(i.second->getPosX());
+				chunksToUnloadY.push_back(i.second->getPosY());
+			}
+		}
+
+		for (int i = 0; i < chunksToUnloadX.size(); i++) {
+			world.unloadChunk(chunksToUnloadX[i], chunksToUnloadY[i]);
 		}
 	}
 }
 
 void GameScreen::update() {
 	if (IsKeyDown(KEY_RIGHT)) {
-		pos.x += 500 * GetFrameTime();
+		pos.x += 300 * GetFrameTime();
 	}
 
 	if (IsKeyDown(KEY_LEFT)) {
-		pos.x -= 500 * GetFrameTime();
+		pos.x -= 300 * GetFrameTime();
 	}
 
 	if (IsKeyDown(KEY_UP)) {
-		pos.y -= 500 * GetFrameTime();
+		pos.y -= 300 * GetFrameTime();
 	}
 
 	if (IsKeyDown(KEY_DOWN)) {
-		pos.y += 500 * GetFrameTime();
+		pos.y += 300 * GetFrameTime();
 	}
+
+	// if (IsKeyDown(KEY_SPACE)) {
+	// 	std::cout << world.loadedChunks.cend() << std::endl;
+	// }
 
 	camera.target = pos;
 
@@ -74,11 +87,12 @@ void GameScreen::update() {
 }
 
 void GameScreen::render() {
+	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
 	
 	//DrawText("This is game screen", 0,0 ,20, BLACK);
 	int chunkX = std::ceil(pos.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(pos.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
-	DrawText(TextFormat("ChunkX: %d", chunkX), 0,0, 20 , BLACK);\
+	DrawText(TextFormat("ChunkX: %d", chunkX), 0,0, 20 , BLACK);
 	DrawText(TextFormat("ChunkY: %d", chunkY), 0,25, 20 , BLACK);
 
 	BeginMode2D(camera);
@@ -87,15 +101,34 @@ void GameScreen::render() {
 		chunk->renderChunk();
 	});
 
-	DrawCircleV(pos, 16, RED);
+	DrawCircleV(pos, 16/2, RED);
+
+	DrawTexturePro(gameplayResource->player,
+		(Rectangle) {
+			.x =0,
+			.y = 0,
+			.width = 16,
+			.height = 32
+		},
+		(Rectangle) {
+			.x = pos.x - gameplayResource->player.width /2,
+			.y = pos.y -gameplayResource->player.height/2,
+			.width= 16,
+			.height = 32,
+		},
+		(Vector2){ 0.0f, 0.0f },
+		0.0f, WHITE
+	);
+	//DrawTexture(gameplayResource->player, pos.x - gameplayResource->player.width /2, pos.y -gameplayResource->player.height/2, WHITE);
 
 	DrawRectangleLines(0, 0, CHUNK_SIZE_X*BLOCK_TILE_SIZE, CHUNK_SIZE_Y*BLOCK_TILE_SIZE, RED);
 	
 	EndMode2D();
+	
 }
 
 GameScreen::~GameScreen() {
 	this->endBackgroundThread = true;
 	this->backgroundThread.join();
-	std::cout<< "endme" <<std::endl;
+	std::cout<< "GameScreen unload" <<std::endl;
 }

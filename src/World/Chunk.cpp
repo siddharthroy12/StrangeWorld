@@ -19,8 +19,14 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 	for (int x = 0; x < CHUNK_SIZE_X; x++) {
 		for (int y = 0; y < CHUNK_SIZE_Y; y++) {
 			this->blocks[x][y] = _blocks[x][y];
-			this->tileTextureMap[x][y][0] = 0;
-			this->tileTextureMap[x][y][1] = 0;
+			if (_blocks[x][y] == Block::DIRT) {
+				this->tileTextureMap[x][y][0] = 0;
+				this->tileTextureMap[x][y][1] = 0;
+			} else {
+				this->tileTextureMap[x][y][0] = 0;
+				this->tileTextureMap[x][y][1] = 0;
+			}
+			
 		}
 	}
 
@@ -52,16 +58,15 @@ void Chunk::loadTexture() {
 		tempModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = gameplayResource->tileAtlas;
 		this->needToLoadModel = false;
 	}
+
 	if (this->needToLoadTexture) {
 		this->chunkTexture = LoadRenderTexture(BLOCK_TILE_SIZE * CHUNK_SIZE_X, BLOCK_TILE_SIZE * CHUNK_SIZE_Y);
 		std::cout << "yes" << std::endl;
 		BeginTextureMode(this->chunkTexture);
 		ClearBackground((Color){ 0,0,0,0 });
 			BeginMode3D(camera);
-				//DrawModel(this->tempModel, (Vector3){ 0.0f, 0.0f, 0.0f }, 1, WHITE);
-				DrawModelWires(this->tempModel, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, WHITE);
-				//DrawCube((Vector3){ 0.0f, 0.0f, 0.0f }, 1, 1, 1, RED);
-				//DrawGrid(100, 4.5f);
+				DrawModel(this->tempModel, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, WHITE);
+				DrawModelWires(this->tempModel, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, BLACK);
 			EndMode3D();
 		EndTextureMode();
 		this->needToLoadTexture = false;
@@ -73,7 +78,7 @@ void Chunk::updateChunk(int x, int y, Block block) {
 }
 
 Chunk::~Chunk() {
-	std::cout << "Thi is called" << std::endl;
 	UnloadRenderTexture(this->chunkTexture);
+	UnloadModel(this->tempModel);
 	UnloadImage(this->chunkImage);
 }
