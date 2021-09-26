@@ -8,6 +8,7 @@
 #include "../System/ResourceManager.hpp"
 #include "../Resources/GameplayResource.hpp"
 #include "../System/EntitySystem.hpp"
+#include "../System/Game.hpp"
 #include "../Entities/Player.hpp"
 #include "../Sizes/WorldSize.hpp"
 #include "../Sizes/RenderSize.hpp"
@@ -90,15 +91,25 @@ void GameScreen::update() {
 	for (const auto& i : World::loadedChunks) {
 		i.second->loadTexture();
 	}
+
+	// Position of block the cursor pointing to
+	
+	int blockX = std::ceil(GetScreenToWorld2D(Game::virtualMousePos, camera).x / (BLOCK_TILE_SIZE))-1;
+	int blockY = std::ceil(GetScreenToWorld2D(Game::virtualMousePos, camera).y / (BLOCK_TILE_SIZE))-1;
+
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+		//std::cout << blockX << std::endl;
+		World::setBlock(blockX, blockY, Block::AIR);
+	}
 }
 
 void GameScreen::render() {
-		// Position of block entity is in
-		int blockX = std::ceil(camera.target.x / (BLOCK_TILE_SIZE))-1;
-		int blockY = std::ceil(camera.target.y / (BLOCK_TILE_SIZE))-1;
+	// Position of block entity is in
+	int blockX = std::ceil(camera.target.x / (BLOCK_TILE_SIZE))-1;
+	int blockY = std::ceil(camera.target.y / (BLOCK_TILE_SIZE))-1;
 	
 	// Find Range of blocks to check
-		int range = std::ceil(Vector2Length(Vector2Subtract(camera.target, (Vector2){ camera.target.x - 16, camera.target.y - 32 })) / BLOCK_TILE_SIZE);
+	int range = std::ceil(Vector2Length(Vector2Subtract(camera.target, (Vector2){ camera.target.x - (16/2), camera.target.y - (32/2) })) / BLOCK_TILE_SIZE);
 
 	int chunkX = std::ceil(this->camera.target.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(this->camera.target.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
@@ -115,7 +126,6 @@ void GameScreen::render() {
 		}
 
 		// Render chunk border
-
 		DrawRectangleLinesEx((Rectangle) {
 			.x = (float)chunkX * CHUNK_SIZE_X * BLOCK_TILE_SIZE,
 			.y = (float)chunkY * CHUNK_SIZE_Y * BLOCK_TILE_SIZE,
@@ -143,7 +153,7 @@ void GameScreen::render() {
 		}
 
 		// Draw World border
-		DrawRectangleLines(0, 0,WORLD_SIZE_X*BLOCK_TILE_SIZE,WORLD_SIZE_Y*BLOCK_TILE_SIZE, RED);
+		DrawRectangleLines(0, 0, WORLD_SIZE_X*BLOCK_TILE_SIZE,WORLD_SIZE_Y*BLOCK_TILE_SIZE, RED);
 	
 	EndMode2D();
 }

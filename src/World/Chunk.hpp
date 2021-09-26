@@ -20,6 +20,7 @@ class Chunk {
 		int posX;
 		int posY;
 		bool needToLoadModel;
+		bool needToUnloadModal;
 		bool needToRenderTexture;
 		bool needToLoadTexture;
 

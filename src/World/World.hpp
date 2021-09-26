@@ -17,6 +17,7 @@ namespace World {
 	void generateMap();
 	void loadChunk(int x, int y);
 	std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> getChunkBlocks(int x, int y);
+	void setBlock(int x, int y, Block block);
 	void unloadChunk(int x, int y);
 	void unloadWorld();
 

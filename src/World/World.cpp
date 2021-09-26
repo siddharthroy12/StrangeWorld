@@ -42,6 +42,21 @@ namespace World {
 		return chunkBlocks;
 	}
 
+	void setBlock(int x, int y, Block block) {
+		std::cout << x << "," << y << std::endl;
+		map[x][y] = block;
+		std::cout << "BlockX: "<< x << "," << "BlockY:" << y << std::endl;
+
+		int chunkX = std::ceil(x / CHUNK_SIZE_X);
+		int chunkY = std::ceil(y / CHUNK_SIZE_Y);
+		std::cout << "ChunkX: "<< chunkX << "," << "ChunkY:" << chunkY << std::endl;
+
+		if (loadedChunks.count(std::to_string(chunkX)+"-"+std::to_string(chunkY))) {
+			loadedChunks[std::to_string(chunkX)+"-"+std::to_string(chunkY)]->updateChunk(x - chunkX*CHUNK_SIZE_X, y - chunkY*CHUNK_SIZE_Y, block);
+		}
+
+	}
+
 	Rectangle srMoveAndCollide(std::vector<Rectangle> staticRects, Rectangle rectToMove, Vector2 velocity) {
 		Rectangle beforeMove = rectToMove;
 
@@ -50,7 +65,7 @@ namespace World {
 
 		Rectangle result = rectToMove;
 
-		for (int i = 0; i < staticRects.size(); i++) {
+		for (int i = staticRects.size() -1; i > -1; i--) {
 			sr_rec _result = sr_resolver_rects_collision(
 				(sr_rec) {
 					.x = staticRects[i].x,
@@ -70,11 +85,13 @@ namespace World {
 			result.y = _result.y;
 		}
 
+		std::cout << "clear" << std::endl;
 		if (result.x == beforeMove.x && result.y == beforeMove.y) {
+			std::cout << "ddin't" << std::endl;
 			result.x += velocity.x * GetFrameTime();
         	result.y += velocity.y * GetFrameTime();
 
-			for (int i = staticRects.size() -1; i > -1; i--) {
+			for (int i = 0; i < staticRects.size(); i++) {
 				sr_rec _result = sr_resolver_rects_collision(
 					(sr_rec) {
 						.x = staticRects[i].x,
@@ -104,9 +121,7 @@ namespace World {
 		int blockX = std::ceil(position.x / (BLOCK_TILE_SIZE))-1;
 		int blockY = std::ceil(position.y / (BLOCK_TILE_SIZE))-1;
 
-		std::cout << blockX << std::endl;
-		// Find Range of blocks to check
-		int range = std::ceil(Vector2Length(Vector2Subtract(position, (Vector2){ hitbox.x, hitbox.y })) / BLOCK_TILE_SIZE) + 2;
+		int range = std::ceil(Vector2Length(Vector2Subtract(position, (Vector2){ hitbox.x, hitbox.y })) / BLOCK_TILE_SIZE);
 
 		Rectangle finalHitboxPosition = hitbox;
 		std::vector<Rectangle> rectsToCheck;
@@ -124,7 +139,6 @@ namespace World {
 						});
 					}
 				}
-				
 			}
 		}
 

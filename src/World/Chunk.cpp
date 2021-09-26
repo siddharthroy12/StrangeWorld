@@ -23,18 +23,18 @@ Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, 
 				this->tileTextureMap[x][y][1] = 0;
 			} else {
 				this->tileTextureMap[x][y][0] = 0;
-				this->tileTextureMap[x][y][1] = 0;
+				this->tileTextureMap[x][y][1] = 3;
 			}
 			
 		}
 	}
 
-	// Generate tilemap mesh
-	this->mesh = rtl_gen_tile_mesh(1, CHUNK_SIZE_X, CHUNK_SIZE_Y, 8, 8, this->tileTextureMap);
+	
 	
 	this->needToRenderTexture = true;
 	this->needToLoadModel = true;
 	this->needToLoadTexture = true;
+	this->needToUnloadModal = false;
 }
 
 int Chunk::getPosX() const {
@@ -47,13 +47,30 @@ int Chunk::getPosY() const {
 
 void Chunk::renderChunk() {
 	std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
-	DrawTexture(this->chunkTexture.texture, this->posX*CHUNK_SIZE_X*BLOCK_TILE_SIZE, this->posY*CHUNK_SIZE_Y*BLOCK_TILE_SIZE, WHITE);
+	
+	DrawTextureEx(
+		this->chunkTexture.texture,
+		(Vector2){
+			.x = (this->posX*CHUNK_SIZE_X*BLOCK_TILE_SIZE) + CHUNK_SIZE_X*BLOCK_TILE_SIZE,
+			.y = (this->posY*CHUNK_SIZE_Y*BLOCK_TILE_SIZE) + CHUNK_SIZE_Y*BLOCK_TILE_SIZE
+		},
+		180.0f,
+		1,
+		WHITE
+	);
 }
 
 void Chunk::loadTexture() {
 
 	// Load model and mesh for tilemap
 	if (this->needToLoadModel) {
+		if (this->needToUnloadModal) {
+			UnloadModel(this->model);
+		}
+
+		// Generate tilemap mesh
+		this->mesh = rtl_gen_tile_mesh(1, CHUNK_SIZE_X, CHUNK_SIZE_Y, 8, 8, this->tileTextureMap);
+
 		std::shared_ptr<GameplayResource> gameplayResource = std::dynamic_pointer_cast<GameplayResource>(ResourceManager::getResource("GameplayResource"));
 		UploadMesh(&this->mesh, false);
 		this->model = LoadModelFromMesh(this->mesh);
@@ -85,8 +102,17 @@ void Chunk::loadTexture() {
 
 // Incomplete function
 void Chunk::updateChunk(int x, int y, Block block) {
+	this->blocks[x][y] = block;
+
+	if (block == Block::AIR) {
+		this->tileTextureMap[x][y][0] = 0;
+		this->tileTextureMap[x][y][1] = 3;
+	}
+
+
 	this->needToLoadModel = true;
 	this->needToRenderTexture = true;
+	this->needToUnloadModal = true;
 }
 
 Chunk::~Chunk() {

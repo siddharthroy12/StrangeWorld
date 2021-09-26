@@ -61,7 +61,7 @@ void Player::update() {
 	if (IsKeyDown(KEY_DOWN)) {
 		this->velocity.y = this->speed;
 	}
-
+	
 	position = World::moveAndCollide(position, velocity, hitbox);
 
 	hitbox.x = position.x - (sprite.width/2);
