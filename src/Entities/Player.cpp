@@ -1,12 +1,25 @@
 #include "Player.hpp"
 #include "../Utils/Assets.hpp"
+#include "raymath.h"
+#include "../Sizes/TileSize.hpp"
+#include "../World/World.hpp"
 
 Player::Player() {
 	this->type = "Player";
 
 	this->sprite = LoadTexture(ASSETS_PATH"player.png");
 	position.x = 10;
-	position.y = 10;
+	position.y = BLOCK_TILE_SIZE * 850;
+
+	velocity.x = 0;
+	velocity.y = 0;
+
+	this->hitbox = (Rectangle) {
+		.x = position.x - (sprite.width/2),
+		.y = position.y - (sprite.height/2),
+		.width = (float)sprite.width,
+		.height = (float)sprite.height
+	};
 }
 
 void Player::render() {
@@ -28,24 +41,34 @@ void Player::render() {
 		0.0f,
 		WHITE
 	);
+
+	DrawRectangleLinesEx(hitbox, 1, BLACK);
 }
 
 void Player::update() {
 	if (IsKeyDown(KEY_RIGHT)) {
-		this->position.x += this->speed * GetFrameTime();
+		this->velocity.x = this->speed;
 	}
 
 	if (IsKeyDown(KEY_LEFT)) {
-		this->position.x -= this->speed * GetFrameTime();
+		this->velocity.x = -this->speed;
 	}
 
 	if (IsKeyDown(KEY_UP)) {
-		this->position.y -= this->speed * GetFrameTime();
+		this->velocity.y = -this->speed;
 	}
 
 	if (IsKeyDown(KEY_DOWN)) {
-		this->position.y += this->speed * GetFrameTime();
+		this->velocity.y = this->speed;
 	}
+
+	position = World::moveAndCollide(position, velocity, hitbox);
+
+	hitbox.x = position.x - (sprite.width/2);
+	hitbox.y = position.y - (sprite.height/2);
+
+	velocity.x = Lerp(velocity.x, 0.0f, 0.1);
+	velocity.y = Lerp(velocity.y, 0.0f, 0.1);
 }
 
 Vector2 Player::getPositon() {

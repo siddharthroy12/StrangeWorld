@@ -9,7 +9,9 @@
 #include "../Resources/GameplayResource.hpp"
 #include "../System/EntitySystem.hpp"
 #include "../Entities/Player.hpp"
-#include "../World/WorldSize.hpp"
+#include "../Sizes/WorldSize.hpp"
+#include "../Sizes/RenderSize.hpp"
+#include "raymath.h"
 
 GameScreen::GameScreen() {
 	// Load necessary resources
@@ -20,10 +22,10 @@ GameScreen::GameScreen() {
 
 	// Camera
 	this->camera = (Camera2D){
-		.offset = (Vector2){ 1366/2, 768/2 }, // Remind me to fix this
+		.offset = (Vector2){ RENDER_WIDTH/2, RENDER_HEIGHT/2 }, // Remind me to fix this
 		.target = (Vector2){ 0.0f, 0.0f },
 		.rotation = 0.0f,
-		.zoom = 5.0f
+		.zoom = 2.0f
 	};
 
 	// Create player entity
@@ -91,7 +93,13 @@ void GameScreen::update() {
 }
 
 void GameScreen::render() {
+		// Position of block entity is in
+		int blockX = std::ceil(camera.target.x / (BLOCK_TILE_SIZE))-1;
+		int blockY = std::ceil(camera.target.y / (BLOCK_TILE_SIZE))-1;
 	
+	// Find Range of blocks to check
+		int range = std::ceil(Vector2Length(Vector2Subtract(camera.target, (Vector2){ camera.target.x - 16, camera.target.y - 32 })) / BLOCK_TILE_SIZE);
+
 	int chunkX = std::ceil(this->camera.target.x / (BLOCK_TILE_SIZE*CHUNK_SIZE_X))-1;
 	int chunkY = std::ceil(this->camera.target.y / (BLOCK_TILE_SIZE*CHUNK_SIZE_Y))-1;
 	
@@ -104,6 +112,29 @@ void GameScreen::render() {
 		// Render chunks
 		for (const auto& i : World::loadedChunks) {
 			i.second->renderChunk();
+		}
+
+		// Render chunk border
+
+		DrawRectangleLinesEx((Rectangle) {
+			.x = (float)chunkX * CHUNK_SIZE_X * BLOCK_TILE_SIZE,
+			.y = (float)chunkY * CHUNK_SIZE_Y * BLOCK_TILE_SIZE,
+			.width = (float)CHUNK_SIZE_X * BLOCK_TILE_SIZE,
+			.height = (float)CHUNK_SIZE_Y * BLOCK_TILE_SIZE
+		}, 1, RED);
+
+		// This can be optimized I think
+		for (int x = blockX - range; x <= blockX + range; x++) {
+			for (int y = blockY - range; y <= blockY + range; y++) {
+				if (x > -1 && x < WORLD_SIZE_X && y > -1 && y < WORLD_SIZE_Y) {
+					DrawRectangleLinesEx((Rectangle) {
+							.x = (float)x * BLOCK_TILE_SIZE,
+							.y = (float)y * BLOCK_TILE_SIZE,
+							.width = (float)BLOCK_TILE_SIZE,
+							.height = (float)BLOCK_TILE_SIZE
+					}, 1, GREEN);
+				}
+			}
 		}
 
 		// Render entities

@@ -1,7 +1,7 @@
 #ifndef BLOCKS_HPP
 #define BLOCKS_HPP
 
-#define BLOCK_TILE_SIZE 16 
+#include "../Sizes/TileSize.hpp"
 
 enum class Block {
 	AIR,

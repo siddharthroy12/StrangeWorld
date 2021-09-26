@@ -6,7 +6,7 @@
 #include <thread>
 #include "raylib.h"
 #include "Chunk.hpp"
-#include "WorldSize.hpp"
+#include "../Sizes/WorldSize.hpp"
 
 namespace World {
 	typedef std::unordered_map<std::string, std::shared_ptr<Chunk>> ChunkMap;
@@ -19,6 +19,8 @@ namespace World {
 	std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> getChunkBlocks(int x, int y);
 	void unloadChunk(int x, int y);
 	void unloadWorld();
+
+	Vector2 moveAndCollide(Vector2 position, Vector2 velocity, Rectangle hitbox);
 }
 
 #endif

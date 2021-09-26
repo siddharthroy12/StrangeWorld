@@ -1,0 +1,7 @@
+#ifndef RENDER_SIZE_HPP
+#define RENDER_SIZE_HPP
+
+#define RENDER_WIDTH 1366
+#define RENDER_HEIGHT 768
+
+#endif

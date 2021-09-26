@@ -7,10 +7,10 @@
 Chunk::Chunk(std::array<std::array<Block, CHUNK_SIZE_Y>, CHUNK_SIZE_X> _blocks, int x, int y) {
 	this->posX = x; this->posY = y; // Set the position of chunk
 
-	camera.position = (Vector3){ 0.0f, 20.0f, 0.0f }; // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f }; // Camera looking at point
+	camera.position = (Vector3){ ((float)CHUNK_SIZE_X/2), 20.0f, -((float)CHUNK_SIZE_Y/2)}; // Camera position
+    camera.target = (Vector3){ ((float)CHUNK_SIZE_X/2), 0.0f, -((float)CHUNK_SIZE_Y/2) }; // Camera looking at point
     camera.up = (Vector3){ 0.0f, 0.0f, 1.0f }; // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f; // Camera field-of-view Y
+    camera.fovy = (float)CHUNK_SIZE_Y; // Camera field-of-view Y
 	camera.projection = CAMERA_ORTHOGRAPHIC; // To draw without perspective
 	
 	// Load blocks data and generate tilemap coords
@@ -73,8 +73,8 @@ void Chunk::loadTexture() {
 		BeginTextureMode(this->chunkTexture);
 		ClearBackground((Color){ 0,0,0,0 });
 			BeginMode3D(camera);
-				DrawModel(this->model, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, WHITE);
-				DrawModelWires(this->model, (Vector3){ -22.5f, 0.0f, 22.5f }, 0.5, BLACK);
+				DrawModel(this->model, (Vector3){ 0, 0.0f, 0 }, 1, WHITE);
+				DrawModelWires(this->model, (Vector3){ 0, 0.0f, 0 }, 1, BLACK);
 			EndMode3D();
 		EndTextureMode();
 		

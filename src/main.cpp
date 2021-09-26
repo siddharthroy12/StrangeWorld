@@ -9,9 +9,7 @@
 #include "./System/Game.hpp"
 #include "./System/ResourceManager.hpp"
 #include "./World/World.hpp"
-
-#define RENDER_WIDTH 1366
-#define RENDER_HEIGHT 768
+#include "./Sizes/RenderSize.hpp"
 
 // Get campled vector
 Vector2 clamp_value(Vector2 value, Vector2 min, Vector2 max) {
