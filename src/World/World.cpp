@@ -57,73 +57,43 @@ namespace World {
 
 	}
 
-	Rectangle srMoveAndCollide(std::vector<Rectangle> staticRects, Rectangle rectToMove, Vector2 velocity) {
-		Rectangle beforeMove = rectToMove;
+	std::vector<sr_sort_pair> sortIndexes(std::vector<sr_sort_pair> times) {
+		sr_sort_pair key;
+		int i, j;
+		int length = times.size();
 
-		rectToMove.x += velocity.x * GetFrameTime();
-		rectToMove.y += velocity.y * GetFrameTime();
+		for (i = 1; i < length; i++) {
+			key = times[i];
+			j = i - 1;
 
-		Rectangle result = rectToMove;
-
-		for (int i = staticRects.size() -1; i > -1; i--) {
-			sr_rec _result = sr_resolver_rects_collision(
-				(sr_rec) {
-					.x = staticRects[i].x,
-					.y = staticRects[i].y,
-					.width = staticRects[i].width,
-					.height = staticRects[i].height
-				},
-				(sr_rec) {
-					.x = result.x,
-					.y = result.y,
-					.width = result.width,
-					.height = result.height
-				}
-			);
-
-			result.x = _result.x;
-			result.y = _result.y;
-		}
-
-		std::cout << "clear" << std::endl;
-		if (result.x == beforeMove.x && result.y == beforeMove.y) {
-			std::cout << "ddin't" << std::endl;
-			result.x += velocity.x * GetFrameTime();
-        	result.y += velocity.y * GetFrameTime();
-
-			for (int i = 0; i < staticRects.size(); i++) {
-				sr_rec _result = sr_resolver_rects_collision(
-					(sr_rec) {
-						.x = staticRects[i].x,
-						.y = staticRects[i].y,
-						.width = staticRects[i].width,
-						.height = staticRects[i].height
-					},
-					(sr_rec) {
-						.x = result.x,
-						.y = result.y,
-						.width = result.width,
-						.height = result.height
-					}
-				);
-
-				result.x = _result.x;
-				result.y = _result.y;
+			while(j >= 0 && times[j].time > key.time) {
+				times[j+1] = times[j];
+				j = j -1;
 			}
+
+			times[j + 1] = key;
+
 		}
 
-		return result;
-
+		return times;
 	}
 
-	Vector2 moveAndCollide(Vector2 position, Vector2 velocity, Rectangle hitbox) {
+	sr_rec rectangeToSrRec(Rectangle rect) {
+		return (sr_rec){
+			rect.x,
+			rect.y,
+			rect.width,
+			rect.height
+		};
+	}
+
+	void moveAndCollide(Vector2 *position, Vector2 *velocity, Vector2 hitbox) {
 		// Position of block entity is in
-		int blockX = std::ceil(position.x / (BLOCK_TILE_SIZE))-1;
-		int blockY = std::ceil(position.y / (BLOCK_TILE_SIZE))-1;
+		int blockX = std::ceil(position->x / (BLOCK_TILE_SIZE))-1;
+		int blockY = std::ceil(position->y / (BLOCK_TILE_SIZE))-1;
 
-		int range = std::ceil(Vector2Length(Vector2Subtract(position, (Vector2){ hitbox.x, hitbox.y })) / BLOCK_TILE_SIZE);
+		int range = std::ceil(Vector2Length(Vector2Subtract(*position, (Vector2){ position->x - (hitbox.x/2), position->y - (hitbox.y/2) })) / BLOCK_TILE_SIZE);
 
-		Rectangle finalHitboxPosition = hitbox;
 		std::vector<Rectangle> rectsToCheck;
 
 		// This can be optimized I think
@@ -142,12 +112,43 @@ namespace World {
 			}
 		}
 
-		finalHitboxPosition = srMoveAndCollide(rectsToCheck, hitbox, velocity);
+		std::vector<sr_sort_pair> times;
+		sr_vec2 cp, cn;
+		float time = 0;
 
-		return (Vector2) {
-			.x = finalHitboxPosition.x + (hitbox.width /2),
-			.y = finalHitboxPosition.y + (hitbox.height /2)
+		sr_rec hitbox_rec = {
+			position->x - (hitbox.x/2),
+			position->y - (hitbox.y/2),
+			hitbox.x,
+			hitbox.y
 		};
+
+		for (int i = 0; i < rectsToCheck.size(); i++) {
+			sr_dynamic_rect_vs_rect(hitbox_rec, rectangeToSrRec(rectsToCheck[i]), (sr_vec2){velocity->x, velocity->y}, &cp, &cn, &time, GetFrameTime());
+			// times[i].index = i;
+			// times[i].time = time;
+			times.push_back((sr_sort_pair){ .index = i, .time = time });
+		}
+
+		times = sortIndexes(times);
+
+		for (int i = 0; i < rectsToCheck.size(); i++) {  
+			if (sr_dynamic_rect_vs_rect(hitbox_rec, rectangeToSrRec(rectsToCheck[times[i].index]),  (sr_vec2){velocity->x, velocity->y}, &cp, &cn, &time, GetFrameTime())) {
+				position->x = cp.x;
+				position->y = cp.y;
+
+				if (fabs(cn.x)) {
+					velocity->x = 0;
+				}
+
+				if (fabs(cn.y)) {
+					velocity->y = 0;
+				}
+			}
+		}
+
+		position->x += velocity->x * GetFrameTime();
+		position->y += velocity->y * GetFrameTime();
 	}
 
 	void loadChunk(int x, int y) {

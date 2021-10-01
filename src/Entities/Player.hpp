@@ -9,7 +9,7 @@ class Player : public Entity {
 		Texture2D sprite;
 		Vector2 position;
 		Vector2 velocity;
-		Rectangle hitbox;
+		Vector2 hitbox;
 		int speed = 90;
 	public:
 		Player();

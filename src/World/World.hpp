@@ -21,7 +21,8 @@ namespace World {
 	void unloadChunk(int x, int y);
 	void unloadWorld();
 
-	Vector2 moveAndCollide(Vector2 position, Vector2 velocity, Rectangle hitbox);
+
+	void moveAndCollide(Vector2 *position, Vector2 *velocity, Vector2 hitbox);
 }
 
 #endif

@@ -14,11 +14,9 @@ Player::Player() {
 	velocity.x = 0;
 	velocity.y = 0;
 
-	this->hitbox = (Rectangle) {
-		.x = position.x - (sprite.width/2),
-		.y = position.y - (sprite.height/2),
-		.width = (float)sprite.width,
-		.height = (float)sprite.height
+	this->hitbox = (Vector2) {
+		.x = (float)sprite.width,
+		.y = (float)sprite.height
 	};
 }
 
@@ -42,7 +40,16 @@ void Player::render() {
 		WHITE
 	);
 
-	DrawRectangleLinesEx(hitbox, 1, BLACK);
+	DrawRectangleLinesEx(
+		(Rectangle){
+			this->position.x - (hitbox.x /2),
+			this->position.y - (hitbox.y /2),
+			hitbox.x,
+			hitbox.y
+		},
+		1,
+		BLACK
+	);
 }
 
 void Player::update() {
@@ -55,20 +62,14 @@ void Player::update() {
 	}
 
 	if (IsKeyDown(KEY_UP)) {
-		this->velocity.y = -this->speed;
+		this->velocity.y = -100;
 	}
 
-	if (IsKeyDown(KEY_DOWN)) {
-		this->velocity.y = this->speed;
-	}
+	velocity.y += 500 * GetFrameTime();
 	
-	position = World::moveAndCollide(position, velocity, hitbox);
-
-	hitbox.x = position.x - (sprite.width/2);
-	hitbox.y = position.y - (sprite.height/2);
+	World::moveAndCollide(&position, &velocity, hitbox);
 
 	velocity.x = Lerp(velocity.x, 0.0f, 0.1);
-	velocity.y = Lerp(velocity.y, 0.0f, 0.1);
 }
 
 Vector2 Player::getPositon() {
